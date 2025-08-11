@@ -3,7 +3,7 @@ const __dirname = import.meta.dirname;
 const app = express();
 
 // Middleware
-app.use(express.static('public'));
+const urlEncodeParser = bodyParser.urlencoded({extended: false});
 
 // ===== Page Routes =====
 app.get('/', (req, res) => {res.sendFile(__dirname + '/pages/home.html');});
