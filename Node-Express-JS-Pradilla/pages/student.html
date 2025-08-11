@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Login</title>
+    <link rel="stylesheet" href="/styles.css"> 
+</head>
+<body>
+    <div class="login-container">
+        <h2>Student Login</h2>
+        <form action="/getStudent" method="GET" class="login-form">
+            <label for="studentID">Student ID:</label>
+            <input type="text" id="studentID" name="studentID" required>
+
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" required>
+
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required>
+
+            <label for="section">Section:</label>
+            <input type="text" id="section" name="section" required>
+
+            <input type="submit" value="Login">
+        </form>
+    </div>
+</body>
+</html>
