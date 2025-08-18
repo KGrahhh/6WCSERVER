@@ -1,9 +1,29 @@
-import express from 'express';
-const __dirname = import.meta.dirname;
-const app = express();
+import express from "express";
+import multer from "multer";
+import bodyParser from "body-parser";
+import path from 'path';
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-// Middleware
-const urlEncodeParser = bodyParser.urlencoded({extended: false});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname (__filename);
+const app = express();
+const urlEncoderParser = bodyParser.urlencoded({ extended: false});
+
+app.use(express.static('public'));
+
+
+// Multer stuff
+var storage = multer.diskStorage({
+destination: (req, file, callback) => {
+callback(null, 'uploads/');
+},
+filename: (req, file, callback) => {
+callback (null, file.originalname);
+}
+});
+var upload = multer({storage: storage}).single('file');
 
 // ===== Page Routes =====
 app.get('/', (req, res) => {res.sendFile(__dirname + '/pages/home.html');});
@@ -13,6 +33,8 @@ app.get('/userPage', (req, res) => {res.sendFile(__dirname + '/pages/user.html')
 app.get('/student', (req, res) => {res.sendFile(__dirname + '/pages/student.html');});
 
 app.get('/admin', (req, res) => {res.sendFile(__dirname + '/pages/admin.html');});
+
+app.get(/admin/upload, (req, res) => {res.sendFile(__dirname + '/pages/uploadForm.html');});
 
 // ===== API Routes =====
 
@@ -60,6 +82,27 @@ app.get('/getAdmin', (req, res) => {
     res.end(`Received Data: ${JSON.stringify(response)}`);
 });
 
+// Get Upload Form
+
+app.post('/upload', (req, res) => {
+upload(req, res, (err) => {
+if (err) {
+return res.status(500).send('Error uploading file');
+}
+
+const username = req.body.username;
+const uploadedFile = req.file;
+
+if (!uploadedFile) {
+return res.status(400).send('No file uploaded');
+}
+
+console.log(`Username: ${username}`);
+console.log(`File Path: ${uploadedFile.path}`);
+
+res.end('File and form uploaded successfully');
+});
+});
 // ===== Start Server =====
 const server = app.listen(5000, () => {
     const host = server.address().address;
